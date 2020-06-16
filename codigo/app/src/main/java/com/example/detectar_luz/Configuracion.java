@@ -1,4 +1,4 @@
-package com.example.retrofitcodinginflow;
+package com.example.detectar_luz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +28,7 @@ public class Configuracion extends AppCompatActivity {
         TextView textView1 = (TextView)findViewById(R.id.t_token);
         textView1.setText(token);
 
-        int valor_lux  = intent.getIntExtra(Sensores.EXTRA_valor_lux,10);
+        float valor_lux  = intent.getFloatExtra(Sensores.EXTRA_valor_lux,10);
 
 
         TextView t_input_lux = (TextView)findViewById(R.id.i_numero_lux);
@@ -43,7 +43,7 @@ public class Configuracion extends AppCompatActivity {
 
                 e_lux = (EditText)findViewById(R.id.i_numero_lux);
 
-                float valor_lux_new = Integer.parseInt(e_lux.getText().toString());
+                float valor_lux_new = Float.parseFloat(e_lux.getText().toString());
                 openSensores(token,valor_lux_new);
             }
         });

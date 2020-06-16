@@ -1,14 +1,18 @@
-package com.example.retrofitcodinginflow;
+package com.example.detectar_luz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +32,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
+    public static final String LUX = "10";
 
     public String currentDate;
 
@@ -35,6 +40,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
     private TextView luminosidad;
     private TextView acelerometro;
     public TextView elders_scrolls;
+    public static TextView internet_textview;
 
     private Button boton_config;
     public Button boton_borrar_registro;
@@ -52,19 +58,26 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
     //para el shared pref
 
     private String text_sha;
+    private Float lux_sha;
 
     //fin shared
 
+    public String token;
 
-
+    Receiver_Internet receiver_internet = new Receiver_Internet();
+    Receiver_pantalla receiver_pantalla = new Receiver_pantalla();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //receiver_pantalla
+        IntentFilter filter2 = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter2.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(receiver_pantalla,filter2);
+
+
         setContentView(R.layout.activity_sensores);
-
-
-
 
         TextView elders_scrolls = (TextView)findViewById(R.id.scroll_text_view);
 
@@ -79,7 +92,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
 
         ScrollView the_scroll = (ScrollView)findViewById(R.id.scrollView2);
 
-        //para el scroll down al cuando abro la app
+        //para el scroll down de los registros al cuando abro la app
 
         the_scroll.post(new Runnable(){
             @Override
@@ -91,10 +104,8 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         Intent intent = getIntent();
 
 
-        var_valor_lux = intent.getFloatExtra(Configuracion.EXTRA_valor_lux_config, 10);
+        var_valor_lux = intent.getFloatExtra(Configuracion.EXTRA_valor_lux_config, lux_sha);
 
-
-        String token;
 
         if(intent.hasExtra(MainActivity.EXTRA_TEXT)){
             token = intent.getStringExtra(MainActivity.EXTRA_TEXT);
@@ -104,14 +115,12 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
 
         }
 
-        TextView textView1 = (TextView)findViewById(R.id.text_sensores_token);
-
-        textView1.setText(token);
-
-
 
         luminosidad   = (TextView) findViewById(R.id.text_luz);
         acelerometro  = (TextView) findViewById(R.id.text_acel);
+        internet_textview  = (TextView) findViewById(R.id.internet_textView);
+        internet_textview.setText("Internet: Conectado");
+        internet_textview.setTextColor(Color.parseColor("#03a56a"));
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -161,7 +170,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         String txt = "";
 
         synchronized (this) {
-            Log.d("sensor", event.sensor.getName());
+            //Log.d("sensor", event.sensor.getName());
 
             switch (event.sensor.getType()) {
 
@@ -208,34 +217,45 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
 
         if(pantalla_arriba && luz_encendida){
             if(!sensado_luz_encendida){
-                elders_scrolls.append(currentDate +"\nLuz Apagada\n");
+                //elders_scrolls.append(currentDate +"\nLuz Apagada\n");
+                elders_scrolls.append("\n"+currentDate + " Luz Apagada");
                 the_scroll.fullScroll(View.FOCUS_DOWN);
                 luz_encendida = false;
                 saveData();
+                CrearEvento.createEvent(token,"DEV","Luz","INACTIVO","Luz Apagada: "+ currentDate);
+                the_scroll.fullScroll(View.FOCUS_DOWN);
             }
         }
         if(pantalla_arriba && !luz_encendida){
             if(sensado_luz_encendida){
-                elders_scrolls.append(currentDate + "\nLuz Encendida\n");
+                elders_scrolls.append("\n"+currentDate + " Luz Encendida");
                 the_scroll.fullScroll(View.FOCUS_DOWN);
                 luz_encendida = true;
                 saveData();
+                CrearEvento.createEvent(token,"DEV","Luz","ACTIVO","Luz Encendida: "+ currentDate);
+                the_scroll.fullScroll(View.FOCUS_DOWN);
             }
         }
         if(pantalla_arriba){
             if(!sensado_pantalla_arriba){
-                elders_scrolls.append(currentDate + "\nPantalla Abajo\n");
+                //elders_scrolls.append(currentDate + "\nPantalla Abajo\n");
+                elders_scrolls.append("\n"+currentDate + " Pantalla Abajo");
                 the_scroll.fullScroll(View.FOCUS_DOWN);
                 pantalla_arriba = false;
                 saveData();
+                CrearEvento.createEvent(token,"DEV","Pantalla","INACTIVO","Pantalla Abajo: "+ currentDate);
+                the_scroll.fullScroll(View.FOCUS_DOWN);
             }
         }
         if(!pantalla_arriba){
             if(sensado_pantalla_arriba){
-                elders_scrolls.append(currentDate + "\nPantalla Arriba\n");
+                //elders_scrolls.append(currentDate + "\nPantalla Arriba\n");
+                elders_scrolls.append("\n"+currentDate + " Pantalla Arriba");
                 the_scroll.fullScroll(View.FOCUS_DOWN);
                 pantalla_arriba = true;
                 saveData();
+                CrearEvento.createEvent(token,"DEV","Pantalla","ACTIVO","Pantalla Arriba: "+ currentDate);
+                the_scroll.fullScroll(View.FOCUS_DOWN);
             }
         }
 
@@ -249,6 +269,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString(TEXT,elders_scrolls.getText().toString());
+        editor.putFloat(LUX,var_valor_lux);
 
         editor.apply();
 
@@ -260,6 +281,7 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
 
         text_sha = sharedPreferences.getString(TEXT, "");
+        lux_sha = sharedPreferences.getFloat(LUX, 10);
 
 
     }
@@ -269,6 +291,8 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         elders_scrolls.setText(text_sha);
         ScrollView the_scroll = (ScrollView)findViewById(R.id.scrollView2);
         the_scroll.fullScroll(View.FOCUS_DOWN);
+
+
 
     }
 
@@ -284,4 +308,85 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver_internet,filter);
+
+
+        //IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        //registerReceiver(wifiStateReceiver,intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver_internet);
+        unregisterReceiver(receiver_pantalla);
+
+        mSensorManager.unregisterListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
+        mSensorManager.unregisterListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        mSensorManager = null;
+        saveData();
+
+        //unregisterReceiver(receiver_pantalla);
+        //unregisterReceiver(wifiStateReceiver);
+    }
+
+    /*@Override
+    protected void onPause() {
+        super.onPause();
+
+        // when the screen is about to turn off
+        if (Receiver_pantalla.pantallaEstabaEncendida) {
+            // this is the case when onPause() is called by the system due to a screen state change
+            Log.i("myApp", "pantalla apagada");
+        } else {
+            // this is when onPause() is called when the screen state has not changed
+        }
+    }*/
+
+    /*@Override
+    protected void onResume() {
+
+        // only when screen turns on
+        if (Receiver_pantalla.pantallaEstabaEncendida) {
+            // this is when onResume() is called due to a screen state change
+            Log.i("myApp", "pantalla encendida");
+        } else {
+            // this is when onResume() is called when the screen state has not changed
+        }
+        super.onResume();
+    }*/
+
+    /*@Override
+    protected void onDestroy() {
+        if (receiver_pantalla != null) {
+            unregisterReceiver(receiver_pantalla);
+            receiver_pantalla = null;
+        }
+        super.onDestroy();
+    }*/
+
+    /*private BroadcastReceiver wifiStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,
+                    WifiManager.WIFI_STATE_UNKNOWN);
+
+            switch(wifiStateExtra){
+                case WifiManager.WIFI_STATE_ENABLED:
+                    Toast.makeText(getApplicationContext(), "Wifi habilitado", Toast.LENGTH_LONG).show();
+                    break;
+
+                case WifiManager.WIFI_STATE_DISABLED:
+                    Toast.makeText(getApplicationContext(), "Wifi deshabilitado", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };*/
 }

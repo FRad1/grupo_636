@@ -1,6 +1,4 @@
-package com.example.retrofitcodinginflow;
-
-import com.google.gson.annotations.SerializedName;
+package com.example.detectar_luz;
 
 public class Post {
 

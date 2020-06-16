@@ -1,4 +1,4 @@
-package com.example.retrofitcodinginflow;
+package com.example.detectar_luz;
 
 import org.junit.Test;
 

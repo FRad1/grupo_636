@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.retrofitcodinginflow">
+    package="com.example.detectar_luz">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,11 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Configuracion"></activity>
+        <activity android:name="com.example.detectar_luz.Configuracion"></activity>
         <activity
-            android:name=".Sensores"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".MainActivity">
+            android:name="com.example.detectar_luz.Sensores"
+            android:parentActivityName="com.example.detectar_luz.MainActivity"></activity>
+        <activity android:name="com.example.detectar_luz.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

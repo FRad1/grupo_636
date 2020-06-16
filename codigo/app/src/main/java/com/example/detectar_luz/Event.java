@@ -1,4 +1,4 @@
-package com.example.retrofitcodinginflow;
+package com.example.detectar_luz;
 
 public class Event {
 
@@ -7,11 +7,13 @@ public class Event {
     private String state;
     private String description;
 
+
     public Event(String env, String type_events, String state, String description) {
         this.env = env;
         this.type_events = type_events;
         this.state = state;
         this.description = description;
+
     }
 
     public String getEnv() {
@@ -29,4 +31,6 @@ public class Event {
     public String getdescription() {
         return description;
     }
+
+
 }

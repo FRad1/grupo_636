@@ -7,29 +7,16 @@
     tools:context=".Sensores">
 
     <TextView
-        android:id="@+id/text_sensores_token"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sensores"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/text_luz"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.453" />
-
-    <TextView
         android:id="@+id/text_luz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/text_acel"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.577" />
+        app:layout_constraintVertical_bias="0.113" />
 
     <TextView
         android:id="@+id/text_acel"
@@ -38,10 +25,10 @@
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.67"
+        app:layout_constraintStart_toEndOf="@+id/text_luz"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.248" />
+        app:layout_constraintVertical_bias="0.112" />
 
     <Button
         android:id="@+id/b_config"
@@ -53,25 +40,26 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_acel"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.342" />
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="260dp"
-        android:layout_height="121dp"
+        android:layout_width="295dp"
+        android:layout_height="212dp"
         android:scrollbarStyle="outsideInset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_acel"
-        app:layout_constraintVertical_bias="0.628">
+        app:layout_constraintVertical_bias="0.878">
 
         <TextView
             android:id="@+id/scroll_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="strum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?" />
+
 
     </ScrollView>
 
@@ -84,5 +72,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/b_config"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.278" />
+
+    <TextView
+        android:id="@+id/internet_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.044" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
