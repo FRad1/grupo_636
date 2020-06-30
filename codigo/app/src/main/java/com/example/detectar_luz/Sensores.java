@@ -71,12 +71,6 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //receiver_pantalla
-        IntentFilter filter2 = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter2.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(receiver_pantalla,filter2);
-
-
         setContentView(R.layout.activity_sensores);
 
         TextView elders_scrolls = (TextView)findViewById(R.id.scroll_text_view);
@@ -121,12 +115,6 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         internet_textview  = (TextView) findViewById(R.id.internet_textView);
         internet_textview.setText("Internet: Conectado");
         internet_textview.setTextColor(Color.parseColor("#03a56a"));
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        mSensorManager.registerListener((SensorEventListener) this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
-
 
         //botones
         boton_config = (Button) findViewById(R.id.b_config);
@@ -317,6 +305,15 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver_internet,filter);
 
+        //receiver_pantalla
+        IntentFilter filter2 = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter2.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(receiver_pantalla,filter2);
+
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        mSensorManager.registerListener((SensorEventListener) this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
 
         //IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
         //registerReceiver(wifiStateReceiver,intentFilter);
@@ -326,18 +323,22 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(receiver_internet);
-        unregisterReceiver(receiver_pantalla);
 
         mSensorManager.unregisterListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
         mSensorManager.unregisterListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
         mSensorManager = null;
         saveData();
 
-        //unregisterReceiver(receiver_pantalla);
-        //unregisterReceiver(wifiStateReceiver);
     }
 
-    /*@Override
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver_pantalla);
+        Log.i("myApp", "unregister receive pantalla");
+    }
+
+      /*@Override
     protected void onPause() {
         super.onPause();
 
@@ -361,15 +362,6 @@ public class Sensores extends AppCompatActivity implements SensorEventListener {
             // this is when onResume() is called when the screen state has not changed
         }
         super.onResume();
-    }*/
-
-    /*@Override
-    protected void onDestroy() {
-        if (receiver_pantalla != null) {
-            unregisterReceiver(receiver_pantalla);
-            receiver_pantalla = null;
-        }
-        super.onDestroy();
     }*/
 
     /*private BroadcastReceiver wifiStateReceiver = new BroadcastReceiver() {

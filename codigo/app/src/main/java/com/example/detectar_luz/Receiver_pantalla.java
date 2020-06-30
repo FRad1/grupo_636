@@ -19,7 +19,7 @@ public class Receiver_pantalla extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        Log.i("myApp", "receive pantalla");
         Calendar calendar = Calendar.getInstance();
         currentDate = DateFormat.getDateTimeInstance().format(calendar.getTime());
 
